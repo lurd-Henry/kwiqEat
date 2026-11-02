@@ -381,7 +381,7 @@ function renderOrders() {
         card.className = "order-history-card";
 
         const title = document.createElement("h3");
-        title.textContent = `Order #${order.orderId || "N/A"}`;
+        title.textContent = `Order #${order.id || "N/A"}`;
 
         const date = document.createElement("p");
 
