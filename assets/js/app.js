@@ -100,7 +100,8 @@ function renderRestaurants(data) {
 
     restaurantGrid.innerHTML = data.map(restaurant => `
 
-        <article class="restaurant-card">
+        <article class="restaurant-card"
+            onclick="openRestaurant(${restaurant.id})">
 
             <div class="restaurant-image">
 
@@ -124,7 +125,9 @@ function renderRestaurants(data) {
 
                 <div class="restaurant-meta">
 
-                    <span class="rating">★ ${restaurant.rating}</span>
+                    <span class="rating">
+                        ★ ${restaurant.rating}
+                    </span>
 
                     <span>${restaurant.delivery}</span>
 
@@ -137,6 +140,11 @@ function renderRestaurants(data) {
         </article>
 
     `).join("");
+}
+
+
+function openRestaurant(id) {
+    window.location.href = `restaurant.html?id=${id}`;
 }
 
 renderRestaurants(restaurants);
