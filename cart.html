@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Cart | kwiqEat</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="header">
+    <nav class="navbar container">
+
+        <a href="index.html" class="logo">
+            kwiq<span>Eat</span><i>.</i>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#restaurants">Restaurants</a>
+        </div>
+
+        <a href="index.html#restaurants" class="signup-btn">
+            Continue shopping
+        </a>
+
+    </nav>
+</header>
+
+
+<main class="cart-page">
+
+    <div class="container">
+
+        <div class="cart-heading">
+            <span class="eyebrow">YOUR ORDER</span>
+            <h1>Your shopping <span>cart.</span></h1>
+            <p>Almost there! Your delicious meal is waiting.</p>
+        </div>
+
+
+        <div class="cart-layout">
+
+            <section class="cart-items-section">
+
+                <div class="cart-section-header">
+                    <h2>Your items</h2>
+
+                    <button id="clearCart" class="clear-cart">
+                        Clear cart
+                    </button>
+                </div>
+
+                <div id="cartItems"></div>
+
+            </section>
+
+
+            <aside class="cart-summary">
+
+                <h2>Order summary</h2>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="subtotal">₦0</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery fee</span>
+                    <strong id="deliveryFee">₦0</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Service fee</span>
+                    <strong id="serviceFee">₦0</strong>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row total-row">
+                    <span>Total</span>
+                    <strong id="grandTotal">₦0</strong>
+                </div>
+
+                <p class="summary-note">
+                    Delivery and service fees are estimates for this demo.
+                </p>
+
+                <button id="checkoutBtn" class="checkout-btn">
+                    Proceed to checkout →
+                </button>
+
+                <div class="secure-note">
+                    🔒 Secure checkout experience
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-bottom">
+
+        <p>© <span id="year"></span> kwiqEat. All rights reserved.</p>
+
+        <p class="developer-credit">
+            Crafted with ❤️ by <strong>Henry</strong>.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<div id="toast" class="toast"></div>
+
+<script src="assets/js/cart.js"></script>
+
+</body>
+</html>
