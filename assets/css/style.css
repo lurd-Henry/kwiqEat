@@ -2077,3 +2077,144 @@ button {
     }
 
 }
+/* TRACKING PAGE */
+
+.tracking-wrapper {
+    max-width: 750px;
+    margin: 55px auto;
+    padding: 20px;
+    min-height: 60vh;
+}
+
+.tracking-heading {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tracking-heading h1 {
+    margin-bottom: 10px;
+}
+
+.tracking-heading p {
+    color: #777;
+}
+
+.tracking-search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tracking-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+}
+
+.tracking-search button {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 9px;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tracking-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.06);
+}
+
+.tracking-card h2 {
+    margin-bottom: 12px;
+}
+
+.tracking-card > p {
+    margin-bottom: 12px;
+    color: #777;
+}
+
+.tracking-current-status {
+    color: var(--primary) !important;
+    font-weight: 700;
+}
+
+.tracking-timeline {
+    margin: 30px 0;
+}
+
+.tracking-step {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    color: #aaa;
+}
+
+.tracking-marker {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.tracking-step.completed {
+    color: #222;
+    font-weight: 600;
+}
+
+.tracking-step.completed .tracking-marker {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.tracking-note {
+    background: #fff4ed;
+    padding: 15px;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+.tracking-error {
+    text-align: center;
+    color: #d9482b;
+    padding: 20px;
+}
+
+.saved-address-hint {
+    color: var(--primary);
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.save-address-option {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 15px 0 20px;
+    font-size: 13px;
+}
+
+@media(max-width: 550px) {
+    .tracking-search {
+        flex-direction: column;
+    }
+
+    .tracking-search button {
+        width: 100%;
+    }
+
+    .tracking-wrapper {
+        margin: 25px auto;
+    }
+}
