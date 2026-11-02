@@ -214,11 +214,29 @@
                     <a href="#restaurants" class="view-link">View all →</a>
                 </div>
 
-                <div class="restaurant-grid" id="restaurantGrid">
+               <div class="restaurant-tools">
 
-                    <!-- Rendered dynamically using JavaScript -->
+    <div class="restaurant-results">
+        <span id="restaurantResultCount">6 restaurants</span>
+    </div>
 
-                </div>
+    <div class="restaurant-sort">
+        <label for="restaurantSort">Sort by:</label>
+
+        <select id="restaurantSort">
+            <option value="default">Recommended</option>
+            <option value="rating">Highest rated</option>
+            <option value="delivery">Fastest delivery</option>
+        </select>
+    </div>
+
+</div>
+
+<div class="restaurant-grid" id="restaurantGrid">
+
+    <!-- Rendered dynamically using JavaScript -->
+
+</div>
 
             </div>
 
