@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Restaurant Dashboard | kwiQeat</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+
+            <a href="index.html" class="logo">
+                kwiq<span>Eat</span><i>.</i>
+            </a>
+
+            <div class="dashboard-profile">
+                <div class="profile-avatar">🍽️</div>
+                <div>
+                    <strong id="restaurantName">Mama's Kitchen</strong>
+                    <small>Restaurant Partner</small>
+                </div>
+            </div>
+
+            <nav class="dashboard-nav">
+                <a href="#overview" class="active" data-section="overview">📊 Overview</a>
+                <a href="#orders" data-section="orders">📦 Orders</a>
+                <a href="#menu" data-section="menu">🍔 Menu Management</a>
+                <a href="#settings" data-section="settings">⚙️ Settings</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="index.html">← Back to Store</a>
+                <button id="restaurantLogout">Log out</button>
+            </div>
+
+        </aside>
+
+        <main class="dashboard-main">
+
+            <header class="dashboard-topbar">
+                <button class="dashboard-menu-toggle" id="dashboardMenuToggle">☰</button>
+
+                <div>
+                    <h2 id="dashboardHeading">Overview</h2>
+                    <p>Manage your restaurant on kwiQeat.</p>
+                </div>
+
+                <div class="dashboard-top-actions">
+                    <span class="live-indicator">● Demo Mode</span>
+                </div>
+            </header>
+
+            <!-- OVERVIEW -->
+
+            <section class="dashboard-section active" id="overview">
+
+                <div class="dashboard-welcome">
+                    <div>
+                        <span class="eyebrow">RESTAURANT MANAGEMENT</span>
+                        <h1>Welcome back! 👋</h1>
+                        <p>Here's what's happening with your restaurant.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-stats">
+
+                    <div class="stat-card">
+                        <span>Total Orders</span>
+                        <h2 id="totalOrders">0</h2>
+                        <small>All recorded orders</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Pending Orders</span>
+                        <h2 id="pendingOrders">0</h2>
+                        <small>Awaiting confirmation</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Completed Orders</span>
+                        <h2 id="completedOrders">0</h2>
+                        <small>Successfully completed</small>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Total Sales</span>
+                        <h2 id="totalSales">₦0</h2>
+                        <small>From completed orders</small>
+                    </div>
+
+                </div>
+
+                <div class="dashboard-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Recent Orders</h3>
+                            <p>Your latest customer orders.</p>
+                        </div>
+
+                        <button class="dashboard-text-btn" data-target="orders">
+                            View all →
+                        </button>
+                    </div>
+
+                    <div class="dashboard-table-wrapper">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentOrdersTable"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="dashboard-empty" id="recentOrdersEmpty">
+                        <span>📦</span>
+                        <h3>No orders yet</h3>
+                        <p>New customer orders will appear here.</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ORDERS -->
+
+            <section class="dashboard-section" id="orders">
+
+                <div class="dashboard-page-heading">
+                    <div>
+                        <h1>Orders</h1>
+                        <p>Manage incoming customer orders.</p>
+                    </div>
+
+                    <select id="orderFilter">
+                        <option value="all">All Orders</option>
+                        <option value="Order placed">Pending</option>
+                        <option value="Order confirmed">Confirmed</option>
+                        <option value="Preparing your food">Preparing</option>
+                        <option value="Out for delivery">Out for delivery</option>
+                        <option value="Delivered">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div id="allOrdersContainer" class="orders-container"></div>
+
+                <div class="dashboard-empty" id="allOrdersEmpty">
+                    <span>🛍️</span>
+                    <h3>No orders found</h3>
+                    <p>Orders from your restaurant will appear here.</p>
+                </div>
+
+            </section>
+
+
+            <!-- MENU -->
+
+            <section class="dashboard-section" id="menu">
+
+                <div class="dashboard-page-heading">
+                    <div>
+                        <h1>Menu Management</h1>
+                        <p>Add and manage your restaurant's meals.</p>
+                    </div>
+
+                    <button class="dashboard-primary-btn" id="addFoodBtn">
+                        + Add New Meal
+                    </button>
+                </div>
+
+                <div class="menu-manager-grid" id="menuManagerGrid"></div>
+
+                <div class="dashboard-empty" id="menuEmpty">
+                    <span>🍔</span>
+                    <h3>Your menu is empty</h3>
+                    <p>Add your first meal to get started.</p>
+                </div>
+
+            </section>
+
+
+            <!-- SETTINGS -->
+
+            <section class="dashboard-section" id="settings">
+
+                <div class="dashboard-page-heading">
+                    <div>
+                        <h1>Restaurant Settings</h1>
+                        <p>Manage your restaurant information.</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-panel settings-panel">
+
+                    <label>Restaurant Name</label>
+                    <input type="text" id="settingRestaurantName" value="Mama's Kitchen">
+
+                    <label>Restaurant Category</label>
+                    <select id="settingRestaurantCategory">
+                        <option>Rice</option>
+                        <option>Burgers</option>
+                        <option>Pizza</option>
+                        <option>Chicken</option>
+                        <option>Drinks</option>
+                        <option>Snacks</option>
+                    </select>
+
+                    <label>Delivery Time</label>
+                    <input type="text" id="settingDeliveryTime" placeholder="20–30 mins">
+
+                    <button class="dashboard-primary-btn" id="saveRestaurantSettings">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- ADD / EDIT MEAL MODAL -->
+
+    <div class="dashboard-modal" id="foodModal">
+
+        <div class="dashboard-modal-content">
+
+            <button class="modal-close" id="closeFoodModal">×</button>
+
+            <h2 id="foodModalTitle">Add New Meal</h2>
+            <p>Add a delicious meal to your restaurant menu.</p>
+
+            <form id="foodForm">
+
+                <input type="hidden" id="foodId">
+
+                <label>Meal Name</label>
+                <input type="text" id="foodName" required placeholder="e.g. Jollof Rice">
+
+                <label>Description</label>
+                <textarea id="foodDescription" placeholder="Describe your meal"></textarea>
+
+                <label>Price (₦)</label>
+                <input type="number" id="foodPrice" min="1" required>
+
+                <label>Image URL</label>
+                <input type="url" id="foodImage" placeholder="https://example.com/food.jpg">
+
+                <button type="submit" class="dashboard-primary-btn">
+                    Save Meal
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-toast" id="dashboardToast"></div>
+
+    <script src="assets/js/restaurant-dashboard.js"></script>
+
+</body>
+</html>
