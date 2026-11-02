@@ -3,7 +3,7 @@
 // STAGE 1.6
 // ===================================
 
-const FAVOURITES_KEY = “kwiqEatFavourites”;
+const FAVOURITES_KEY = "kwiqEatFavourites";
 
 // ===================================
 // RESTAURANT DATA
@@ -12,16 +12,16 @@ const FAVOURITES_KEY = “kwiqEatFavourites”;
 const restaurants = [
 {
 id: 1,
-name: “Mama’s Kitchen”,
-category: “Nigerian • Local meals”,
+name: "Mama’s Kitchen",
+category: "Nigerian • Local meals",
 rating: 4.9,
-delivery: “20-35 min”,
+delivery: "20-35 min",
 deliveryMin: 20,
-price: “₦500 delivery”,
-badge: “Popular”,
-image: “https://images.unsplash.com/photo-1547592180-85f173990554?w=700”,
-keywords: [“rice”, “chicken”, “nigerian”, “local”, “egusi”, “ofada”, “jollof”],
-menu: [“Jollof Rice & Chicken”, “Fried Rice & Turkey”, “Egusi Soup & Pounded Yam”, “Ofada Rice & Ayamase”]
+price: "₦500 delivery",
+badge: "Popular",
+image: "https://images.unsplash.com/photo-1547592180-85f173990554?w=700",
+keywords: ["rice", "chicken", "nigerian", "local", "egusi", "ofada", "jollof"],
+menu: ["Jollof Rice & Chicken", "Fried Rice & Turkey", "Egusi Soup & Pounded Yam", "Ofada Rice & Ayamase"]
 },
 
 {
@@ -155,9 +155,9 @@ renderRestaurants(currentRestaurants);
 // RESTAURANT RENDERING
 // ===================================
 
-const restaurantGrid = document.getElementById(“restaurantGrid”);
+const restaurantGrid = document.getElementById("restaurantGrid");
 
-let currentRestaurants = […restaurants];
+let currentRestaurants = [...restaurants];
 
 function renderRestaurants(data) {
 
@@ -403,7 +403,10 @@ toastTimeout = setTimeout(() => {
 // INITIALIZE
 // ===================================
 
-document.getElementById(“year”).textContent =
-new Date().getFullYear();
+const yearElement = document.getElementById("year");
+
+if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+}
 
 renderRestaurants(restaurants);
