@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | kwiQeat</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .admin-panel {
+            background: #fff;
+            padding: 22px;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            margin-bottom: 22px;
+        }
+
+        .admin-panel h3 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 18px;
+        }
+
+        .admin-table-wrap {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 14px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+        }
+
+        .admin-table th {
+            color: #999;
+        }
+
+        .admin-table button {
+            border: none;
+            padding: 8px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 11px;
+            margin: 2px;
+        }
+
+        .admin-action {
+            background: #fff0e8;
+            color: #ff6b1a;
+        }
+
+        .admin-danger {
+            background: #fff0f0;
+            color: #d94444;
+        }
+
+        .admin-success {
+            background: #e9f8ef;
+            color: #219653;
+        }
+
+        .admin-muted {
+            background: #f1f1f1;
+            color: #555;
+        }
+
+        .admin-status {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .admin-status.active {
+            background: #e8f8ef;
+            color: #219653;
+        }
+
+        .admin-status.pending {
+            background: #fff5df;
+            color: #b77a13;
+        }
+
+        .admin-status.suspended {
+            background: #fff0f0;
+            color: #d94444;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 12px;
+            max-width: 550px;
+        }
+
+        .admin-form input,
+        .admin-form select,
+        .admin-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        .admin-form textarea {
+            min-height: 90px;
+        }
+
+        .admin-form label {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: -7px;
+        }
+
+        .admin-empty {
+            text-align: center;
+            padding: 35px 15px;
+            color: #999;
+            display: none;
+            font-size: 13px;
+        }
+
+        .admin-section-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-section-actions input,
+        .admin-section-actions select {
+            padding: 10px 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .admin-notice {
+            padding: 13px;
+            background: #fff7ed;
+            color: #a34d13;
+            border-radius: 9px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .category-admin-list {
+            display: grid;
+            gap: 10px;
+            max-width: 600px;
+        }
+
+        .category-admin-item {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 14px;
+            border-radius: 9px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-admin-item button {
+            border: none;
+            background: #fff0f0;
+            color: #d94444;
+            padding: 7px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .admin-chart-placeholder {
+            padding: 30px;
+            background: #fff8f3;
+            border-radius: 10px;
+            color: #888;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media(max-width: 1000px) {
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+            .admin-stats {
+                gap: 10px;
+            }
+
+            .admin-panel {
+                padding: 15px;
+            }
+
+            .admin-section-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .admin-section-actions input,
+            .admin-section-actions select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-body">
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="dashboard-sidebar" id="adminSidebar">
+
+        <a href="index.html" class="logo">
+            kwiq<span>Eat</span><i>.</i>
+        </a>
+
+        <div class="dashboard-profile">
+            <div class="profile-avatar">👑</div>
+
+            <div>
+                <strong>Administrator</strong>
+                <small>Platform Control</small>
+            </div>
+        </div>
+
+        <nav class="dashboard-nav">
+
+            <a href="#overview" class="active" data-section="overview">
+                📊 Overview
+            </a>
+
+            <a href="#restaurants" data-section="restaurants">
+                🍽️ Restaurants
+            </a>
+
+            <a href="#orders" data-section="orders">
+                📦 Orders
+            </a>
+
+            <a href="#customers" data-section="customers">
+                👥 Customers
+            </a>
+
+            <a href="#categories" data-section="categories">
+                🗂️ Categories
+            </a>
+
+            <a href="#settings" data-section="settings">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="index.html">← Back to Store</a>
+            <button id="adminLogout">Log out</button>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-topbar">
+
+            <button class="dashboard-menu-toggle" id="adminMenuToggle">
+                ☰
+            </button>
+
+            <div>
+                <h2 id="adminHeading">Overview</h2>
+                <p>Manage your kwiQeat platform.</p>
+            </div>
+
+            <span class="live-indicator">● Admin Demo</span>
+
+        </header>
+
+
+        <!-- OVERVIEW -->
+
+        <section class="dashboard-section active" id="overview">
+
+            <div class="dashboard-welcome">
+                <span class="eyebrow">PLATFORM MANAGEMENT</span>
+
+                <h1>Welcome, Admin 👋</h1>
+
+                <p>Here's an overview of your food delivery platform.</p>
+            </div>
+
+            <div class="admin-notice">
+                You're currently viewing demo data stored in this browser.
+                This dashboard is not yet connected to a live backend.
+            </div>
+
+            <div class="admin-stats">
+
+                <div class="stat-card">
+                    <span>Total Orders</span>
+                    <h2 id="adminTotalOrders">0</h2>
+                    <small>All recorded orders</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Total Restaurants</span>
+                    <h2 id="adminTotalRestaurants">0</h2>
+                    <small>Registered restaurants</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Total Customers</span>
+                    <h2 id="adminTotalCustomers">0</h2>
+                    <small>Registered accounts</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>Platform Sales</span>
+                    <h2 id="adminTotalSales">₦0</h2>
+                    <small>Completed orders</small>
+                </div>
+
+            </div>
+
+            <div class="admin-panel">
+
+                <h3>Recent Orders</h3>
+
+                <div class="admin-table-wrap">
+
+                    <table class="admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Restaurant</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adminRecentOrders"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="admin-empty" id="adminRecentEmpty">
+                    No orders have been placed yet.
+                </div>
+
+            </div>
+
+            <div class="admin-panel">
+
+                <h3>Platform Activity</h3>
+
+                <div class="admin-chart-placeholder" id="adminActivity">
+                    Your platform activity will appear here as orders are recorded.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RESTAURANTS -->
+
+        <section class="dashboard-section" id="restaurants">
+
+            <div class="dashboard-page-heading">
+                <div>
+                    <h1>Restaurants</h1>
+                    <p>Manage restaurants registered on kwiQeat.</p>
+                </div>
+
+                <button class="dashboard-primary-btn" id="addRestaurantBtn">
+                    + Add Restaurant
+                </button>
+            </div>
+
+            <div class="admin-section-actions">
+
+                <input
+                    type="search"
+                    id="restaurantSearch"
+                    placeholder="Search restaurants..."
+                >
+
+                <select id="restaurantStatusFilter">
+                    <option value="all">All restaurants</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+
+            </div>
+
+            <div class="admin-panel">
+
+                <div class="admin-table-wrap">
+
+                    <table class="admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Restaurant</th>
+                                <th>Category</th>
+                                <th>Delivery</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adminRestaurantsTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="admin-empty" id="adminRestaurantsEmpty">
+                    No restaurants found.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ORDERS -->
+
+        <section class="dashboard-section" id="orders">
+
+            <div class="dashboard-page-heading">
+                <div>
+                    <h1>All Orders</h1>
+                    <p>Monitor and manage customer orders.</p>
+                </div>
+            </div>
+
+            <div class="admin-section-actions">
+
+                <input
+                    type="search"
+                    id="orderSearch"
+                    placeholder="Search order ID or customer..."
+                >
+
+                <select id="adminOrderFilter">
+                    <option value="all">All statuses</option>
+                    <option value="Order placed">Order placed</option>
+                    <option value="Order confirmed">Confirmed</option>
+                    <option value="Preparing your food">Preparing</option>
+                    <option value="Out for delivery">Out for delivery</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+            </div>
+
+            <div class="admin-panel">
+
+                <div class="admin-table-wrap">
+
+                    <table class="admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Restaurant</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adminOrdersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="admin-empty" id="adminOrdersEmpty">
+                    No orders found.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CUSTOMERS -->
+
+        <section class="dashboard-section" id="customers">
+
+            <div class="dashboard-page-heading">
+                <div>
+                    <h1>Customers</h1>
+                    <p>View registered kwiQeat customers.</p>
+                </div>
+            </div>
+
+            <div class="admin-section-actions">
+
+                <input
+                    type="search"
+                    id="customerSearch"
+                    placeholder="Search customers..."
+                >
+
+            </div>
+
+            <div class="admin-panel">
+
+                <div class="admin-table-wrap">
+
+                    <table class="admin-table">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Orders</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="adminCustomersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="admin-empty" id="adminCustomersEmpty">
+                    No customer accounts found.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CATEGORIES -->
+
+        <section class="dashboard-section" id="categories">
+
+            <div class="dashboard-page-heading">
+                <div>
+                    <h1>Food Categories</h1>
+                    <p>Manage the categories displayed on your platform.</p>
+                </div>
+            </div>
+
+            <div class="admin-panel">
+
+                <form id="categoryForm" class="admin-form">
+
+                    <label for="newCategory">Add a new category</label>
+
+                    <input
+                        type="text"
+                        id="newCategory"
+                        placeholder="e.g. Shawarma"
+                        required
+                    >
+
+                    <button class="dashboard-primary-btn" type="submit">
+                        Add Category
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="category-admin-list" id="categoryAdminList"></div>
+
+        </section>
+
+
+        <!-- SETTINGS -->
+
+        <section class="dashboard-section" id="settings">
+
+            <div class="dashboard-page-heading">
+                <div>
+                    <h1>Platform Settings</h1>
+                    <p>Configure basic kwiQeat platform information.</p>
+                </div>
+            </div>
+
+            <div class="admin-panel">
+
+                <form id="platformSettingsForm" class="admin-form">
+
+                    <label for="platformName">Platform Name</label>
+
+                    <input
+                        type="text"
+                        id="platformName"
+                        value="kwiQeat"
+                        required
+                    >
+
+                    <label for="platformEmail">Support Email</label>
+
+                    <input
+                        type="email"
+                        id="platformEmail"
+                        placeholder="support@kwiqeat.com"
+                    >
+
+                    <label for="deliveryFee">Default Delivery Fee (₦)</label>
+
+                    <input
+                        type="number"
+                        id="deliveryFee"
+                        min="0"
+                        value="500"
+                    >
+
+                    <label for="serviceFee">Service Fee (%)</label>
+
+                    <input
+                        type="number"
+                        id="serviceFee"
+                        min="0"
+                        max="100"
+                        value="3"
+                    >
+
+                    <button type="submit" class="dashboard-primary-btn">
+                        Save Settings
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- RESTAURANT MODAL -->
+
+<div class="dashboard-modal" id="restaurantModal">
+
+    <div class="dashboard-modal-content">
+
+        <button class="modal-close" id="closeRestaurantModal">×</button>
+
+        <h2 id="restaurantModalTitle">Add Restaurant</h2>
+
+        <p>Enter the restaurant's information below.</p>
+
+        <form id="restaurantForm">
+
+            <input type="hidden" id="restaurantId">
+
+            <label for="newRestaurantName">Restaurant Name</label>
+            <input type="text" id="newRestaurantName" required>
+
+            <label for="newRestaurantCategory">Category</label>
+
+            <select id="newRestaurantCategory">
+                <option>Rice</option>
+                <option>Burgers</option>
+                <option>Pizza</option>
+                <option>Chicken</option>
+                <option>Drinks</option>
+                <option>Snacks</option>
+            </select>
+
+            <label for="newRestaurantDelivery">Delivery Time</label>
+            <input type="text" id="newRestaurantDelivery" placeholder="20–30 mins">
+
+            <button type="submit" class="dashboard-primary-btn">
+                Save Restaurant
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="dashboard-toast" id="dashboardToast"></div>
+
+
+<script src="assets/js/admin-dashboard.js"></script>
+
+</body>
+</html>
