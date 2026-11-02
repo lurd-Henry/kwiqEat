@@ -21,36 +21,55 @@
     <header class="header">
         <nav class="navbar container">
 
-            <a href="index.html" class="logo">
-                kwiq<span>Eat</span><i>.</i>
-            </a>
+    <a href="index.html" class="logo">
+        kwiq<span>Eat</span><i>.</i>
+    </a>
 
-            <div class="nav-links" id="navLinks">
-                <a href="#home" class="active">Home</a>
-                <a href="#restaurants">Restaurants</a>
-                <a href="#categories">Categories</a>
-                <a href="#offers">Offers</a>
-            </div>
+    <div class="nav-links" id="navLinks">
+        <a href="#home" class="active">Home</a>
+        <a href="#restaurants">Restaurants</a>
+        <a href="#categories">Categories</a>
+        <a href="#offers">Offers</a>
+    </div>
 
-            <div class="nav-actions">
-                <a href="cart.html" class="login-btn">
-    🛒 Cart
-</a>
-                <a href="account.html">My Account</a>
-                <a href="favourites.html" class="favourites-nav">
-    ❤️ Favourites
-</a>
-                <a href="#" class="login-btn">Login</a>
-                <a href="#" class="signup-btn">Get Started</a>
+    <div class="nav-actions">
 
-                <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+        <!-- Cart -->
+        <a href="cart.html" class="nav-icon" aria-label="Shopping cart" title="Cart">
+            <svg viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+        </a>
 
-        </nav>
+        <!-- Favourites -->
+        <a href="favourites.html" class="nav-icon" aria-label="Favourites" title="Favourites">
+            <svg viewBox="0 0 24 24">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"></path>
+            </svg>
+        </a>
+
+        <!-- Account -->
+        <a href="account.html" class="nav-icon" aria-label="My account" title="Account">
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 21a8 8 0 0 1 16 0"></path>
+            </svg>
+        </a>
+
+        <a href="#" class="login-btn desktop-auth">Login</a>
+        <a href="#" class="signup-btn desktop-auth">Get Started</a>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
+
+</nav>
     </header>
 
 
