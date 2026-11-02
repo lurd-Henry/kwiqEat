@@ -230,8 +230,8 @@ window.location.href = `restaurant.html?id=${id}`;
 // SEARCH
 // ===================================
 
-const searchForm = document.getElementById(“searchForm”);
-const searchInput = document.getElementById(“searchInput”);
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("searchInput");
 
 function searchRestaurants(query, shouldScroll = true) {
 
@@ -262,13 +262,13 @@ if (shouldScroll) {
 
 // LIVE SEARCH
 
-searchInput?.addEventListener(“input”, () => {
+searchInput?.addEventListener("input", () => {
 
 searchRestaurants(searchInput.value, false);
 
 });
 
-searchForm?.addEventListener(“submit”, event => {
+searchForm?.addEventListener("submit", event => {
 
 event.preventDefault();
 if (!searchInput.value.trim()) {
@@ -294,7 +294,7 @@ const categoryMap = {
 
 };
 
-document.querySelectorAll(”.category-card”).forEach(card => {
+document.querySelectorAll(".category-card").forEach(card => {
 
 card.addEventListener("click", function() {
     const category = this.dataset.category;
@@ -317,9 +317,9 @@ card.addEventListener("click", function() {
 // SORTING
 // ===================================
 
-const restaurantSort = document.getElementById(“restaurantSort”);
+const restaurantSort = document.getElementById("restaurantSort");
 
-restaurantSort?.addEventListener(“change”, function() {
+restaurantSort?.addEventListener("change", function() {
 
 const sorted = [...currentRestaurants];
 if (this.value === "rating") {
@@ -349,16 +349,16 @@ renderRestaurants(restaurants);
 // MOBILE NAVIGATION
 // ===================================
 
-const menuToggle = document.getElementById(“menuToggle”);
-const navLinks = document.getElementById(“navLinks”);
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
 
-menuToggle?.addEventListener(“click”, () => {
+menuToggle?.addEventListener("click", () => {
 
 navLinks?.classList.toggle("show");
 
 });
 
-document.querySelectorAll(”.nav-links a”).forEach(link => {
+document.querySelectorAll(".nav-links a").forEach(link => {
 
 link.addEventListener("click", () => {
     navLinks?.classList.remove("show");
@@ -370,9 +370,9 @@ link.addEventListener("click", () => {
 // NEWSLETTER DEMO
 // ===================================
 
-const newsletterForm = document.getElementById(“newsletterForm”);
+const newsletterForm = document.getElementById("newsletterForm");
 
-newsletterForm?.addEventListener(“submit”, function(event) {
+newsletterForm?.addEventListener("submit", function(event) {
 
 event.preventDefault();
 showToast("Thanks for subscribing! 🎉");
