@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Track Order | kwiQeat</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container navbar">
+        <a href="index.html" class="logo">kwiq<span>Eat</span></a>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart 🛒</a>
+            <a href="account.html">Account</a>
+        </nav>
+    </div>
+</header>
+
+
+<main class="tracking-wrapper">
+
+    <div class="tracking-heading">
+        <h1>Track Your Order 📦</h1>
+        <p>Follow your order's journey from kitchen to doorstep.</p>
+    </div>
+
+    <form id="trackingForm" class="tracking-search">
+        <input
+            type="text"
+            id="orderIdInput"
+            placeholder="Enter your order ID"
+            required
+        >
+
+        <button type="submit">Track Order</button>
+    </form>
+
+    <div id="trackingResult"></div>
+
+</main>
+
+
+<footer class="footer">
+    <p>© <span id="year"></span> kwiQeat.</p>
+    <p>Crafted with ❤️ by Henry</p>
+</footer>
+
+<script src="tracking.js"></script>
+
+</body>
+</html>
