@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | kwiqEat</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <nav class="navbar container">
+
+        <a href="index.html" class="logo">
+            kwiq<span>Eat</span><i>.</i>
+        </a>
+
+        <a href="cart.html" class="back-link">
+            ← Back to cart
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="checkout-page">
+
+    <div class="container">
+
+        <div class="cart-heading">
+
+            <span class="eyebrow">ALMOST THERE</span>
+
+            <h1>Complete your <span>order.</span></h1>
+
+            <p>Just a few details before your food gets to you.</p>
+
+        </div>
+
+
+        <form id="checkoutForm">
+
+            <div class="checkout-layout">
+
+
+                <!-- DELIVERY DETAILS -->
+
+                <section class="checkout-details">
+
+                    <div class="checkout-card">
+
+                        <h2>📍 Delivery information</h2>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="fullName">Full name</label>
+
+                                <input
+                                    type="text"
+                                    id="fullName"
+                                    name="fullName"
+                                    placeholder="Your full name"
+                                    autocomplete="name"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="phone">Phone number</label>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="08012345678"
+                                    autocomplete="tel"
+                                    required
+                                    pattern="[0-9+ ]{10,15}"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label for="email">Email address</label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    placeholder="you@example.com"
+                                    autocomplete="email"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label for="address">Delivery address</label>
+
+                                <textarea
+                                    id="address"
+                                    name="address"
+                                    placeholder="House number, street name and area"
+                                    autocomplete="street-address"
+                                    required
+                                ></textarea>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="city">City</label>
+
+                                <input
+                                    type="text"
+                                    id="city"
+                                    name="city"
+                                    placeholder="e.g. Lagos"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="landmark">Nearby landmark</label>
+
+                                <input
+                                    type="text"
+                                    id="landmark"
+                                    name="landmark"
+                                    placeholder="Optional"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label for="instructions">
+                                    Delivery instructions (optional)
+                                </label>
+
+                                <textarea
+                                    id="instructions"
+                                    name="instructions"
+                                    placeholder="Any additional directions for the rider?"
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PAYMENT -->
+
+                    <div class="checkout-card">
+
+                        <h2>💳 Payment method</h2>
+
+                        <div class="payment-options">
+
+                            <label class="payment-option">
+
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="cash"
+                                    checked
+                                >
+
+                                <span>
+                                    <strong>Cash on delivery</strong>
+                                    <small>Pay when your order arrives.</small>
+                                </span>
+
+                                <span>💵</span>
+
+                            </label>
+
+
+                            <label class="payment-option">
+
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="online"
+                                >
+
+                                <span>
+                                    <strong>Pay online</strong>
+                                    <small>Pay securely using Paystack (coming soon).</small>
+                                </span>
+
+                                <span>💳</span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                </section>
+
+
+                <!-- ORDER SUMMARY -->
+
+                <aside class="checkout-summary">
+
+                    <h2>Your order</h2>
+
+                    <div id="checkoutItems"></div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-row">
+
+                        <span>Subtotal</span>
+
+                        <strong id="checkoutSubtotal">₦0</strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>Delivery fee</span>
+
+                        <strong id="checkoutDelivery">₦0</strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>Service fee</span>
+
+                        <strong id="checkoutService">₦0</strong>
+
+                    </div>
+
+
+                    <div class="summary-divider"></div>
+
+
+                    <div class="summary-row total-row">
+
+                        <span>Total</span>
+
+                        <strong id="checkoutTotal">₦0</strong>
+
+                    </div>
+
+
+                    <button type="submit" class="checkout-btn" id="placeOrderBtn">
+                        Place order →
+                    </button>
+
+                    <p class="checkout-disclaimer">
+                        Demo checkout only. No real payment will be processed.
+                    </p>
+
+                </aside>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-bottom">
+
+        <p>© <span id="year"></span> kwiqEat. All rights reserved.</p>
+
+        <p class="developer-credit">
+            Crafted with ❤️ by <strong>Henry</strong>.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<div id="toast" class="toast"></div>
+
+<script src="assets/js/checkout.js"></script>
+
+</body>
+</html>
