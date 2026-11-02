@@ -1,4 +1,4 @@
-const CART_KEY = "kwiQeatCart";
+const CART_KEY = "kwiqEatCart";
 const ACCOUNT_KEY = "kwiQeatAccount";
 const ORDERS_KEY = "kwiQeatOrders";
 
