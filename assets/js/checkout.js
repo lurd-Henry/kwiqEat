@@ -30,7 +30,7 @@ function calculateTotals() {
     );
 
     const delivery = cart.length ? DELIVERY_FEE : 0;
-    const service = subtotal * SERVICE_RATE;
+    const service = Math.round(subtotal * SERVICE_RATE);
 
     return {
         subtotal,
