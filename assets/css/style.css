@@ -2218,3 +2218,68 @@ button {
         margin: 25px auto;
     }
 }
+/* NAVBAR ICONS */
+
+.nav-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dark);
+    border-radius: 12px;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-icon svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-icon:hover {
+    color: var(--primary);
+    background: var(--light);
+}
+
+/* MOBILE NAVBAR */
+
+@media (max-width: 768px) {
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .nav-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .nav-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .desktop-auth {
+        display: none !important;
+    }
+
+    .menu-toggle {
+        margin-left: 4px;
+    }
+
+}
