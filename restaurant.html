@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Restaurant | kwiqEat</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <nav class="navbar container">
+
+        <a href="index.html" class="logo">
+            kwiq<span>Eat</span><i>.</i>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#restaurants">Restaurants</a>
+        </div>
+
+        <div class="nav-actions">
+
+            <a href="cart.html" class="signup-btn">
+                🛒 Cart <span id="cartCount">0</span>
+            </a>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+<main class="restaurant-page">
+
+    <div class="container">
+
+        <a href="index.html#restaurants" class="back-link">
+            ← Back to restaurants
+        </a>
+
+        <section class="restaurant-profile" id="restaurantProfile">
+
+            <!-- Restaurant information rendered here -->
+
+        </section>
+
+
+        <section class="menu-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">EXPLORE THE MENU</span>
+                    <h2>Our <span>delicious meals</span></h2>
+                </div>
+
+            </div>
+
+            <div class="menu-categories" id="menuCategories"></div>
+
+            <div class="food-grid" id="foodGrid"></div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container footer-bottom">
+
+        <p>© <span id="year"></span> kwiqEat. All rights reserved.</p>
+
+        <p class="developer-credit">
+            Crafted with ❤️ by <strong>Henry</strong>.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<div id="toast" class="toast"></div>
+
+<script src="restaurant.js"></script>
+
+</body>
+</html>
