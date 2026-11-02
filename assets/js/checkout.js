@@ -1,256 +1,280 @@
-// ===================================
-// KWIQEAT CHECKOUT SYSTEM
-// ===================================
-
-const CART_KEY = "kwiqEatCart";
+const CART_KEY = "kwiQeatCart";
+const ACCOUNT_KEY = "kwiQeatAccount";
+const ORDERS_KEY = "kwiQeatOrders";
 
 const DELIVERY_FEE = 500;
+const SERVICE_RATE = 0.03;
 
-const SERVICE_FEE_RATE = 0.03;
+const checkoutForm = document.getElementById("checkoutForm");
 
-const cart = getCart();
-
-
-// ===================================
-// CART DATA
-// ===================================
-
-function getCart() {
-
+function getStorage(key, fallback) {
     try {
-
-        const data = JSON.parse(localStorage.getItem(CART_KEY));
-
-        return Array.isArray(data) ? data : [];
-
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
     } catch {
-
-        return [];
-
+        return fallback;
     }
+}
 
+let cart = getStorage(CART_KEY, []);
+let account = getStorage(ACCOUNT_KEY, null);
+
+const addressSelect = document.getElementById("savedAddressSelect");
+
+
+// ---------- CART SUMMARY ----------
+
+function calculateTotals() {
+    const subtotal = cart.reduce(
+        (sum, item) => sum + Number(item.price) * Number(item.quantity),
+        0
+    );
+
+    const delivery = cart.length ? DELIVERY_FEE : 0;
+    const service = subtotal * SERVICE_RATE;
+
+    return {
+        subtotal,
+        delivery,
+        service,
+        total: subtotal + delivery + service
+    };
 }
 
 
-function formatCurrency(amount) {
-
-    return "₦" + Number(amount).toLocaleString("en-NG");
-
-}
-
-
-const subtotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-);
-
-const deliveryFee = cart.length ? DELIVERY_FEE : 0;
-
-const serviceFee = cart.length
-    ? Math.round(subtotal * SERVICE_FEE_RATE)
-    : 0;
-
-const grandTotal = subtotal + deliveryFee + serviceFee;
-
-
-// ===================================
-// RENDER ORDER SUMMARY
-// ===================================
-
-function renderCheckout() {
-
+function renderCheckoutSummary() {
     const container = document.getElementById("checkoutItems");
 
-    if (!cart.length) {
+    if (!container) return;
 
-        container.innerHTML = `
-            <p>Your cart is empty.</p>
-            <a href="index.html">Explore restaurants</a>
-        `;
+    container.innerHTML = "";
 
-        document.getElementById("placeOrderBtn").disabled = true;
+    cart.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "checkout-item";
 
-        return;
+        const name = document.createElement("span");
+        name.textContent = `${item.name} × ${item.quantity}`;
 
-    }
+        const price = document.createElement("strong");
+        price.textContent =
+            `₦${(item.price * item.quantity).toLocaleString()}`;
 
+        row.append(name, price);
+        container.appendChild(row);
+    });
 
-    container.innerHTML = cart.map(item => `
-
-        <div class="checkout-product">
-
-            <img src="${item.image}" alt="${item.name}">
-
-            <div>
-                <strong>${item.name}</strong>
-                <small>Qty: ${item.quantity}</small>
-            </div>
-
-            <span>
-                ${formatCurrency(item.price * item.quantity)}
-            </span>
-
-        </div>
-
-    `).join("");
-
+    const totals = calculateTotals();
 
     document.getElementById("checkoutSubtotal").textContent =
-        formatCurrency(subtotal);
+        `₦${totals.subtotal.toLocaleString()}`;
 
     document.getElementById("checkoutDelivery").textContent =
-        formatCurrency(deliveryFee);
+        `₦${totals.delivery.toLocaleString()}`;
 
     document.getElementById("checkoutService").textContent =
-        formatCurrency(serviceFee);
+        `₦${totals.service.toLocaleString()}`;
 
     document.getElementById("checkoutTotal").textContent =
-        formatCurrency(grandTotal);
-
+        `₦${totals.total.toLocaleString()}`;
 }
 
 
-// ===================================
-// PAYMENT METHOD
-// ===================================
+// ---------- SAVED ADDRESSES ----------
 
-document.querySelectorAll('input[name="payment"]').forEach(input => {
+function renderSavedAddresses() {
 
-    input.addEventListener("change", () => {
+    if (!addressSelect) return;
 
-        const online = document.querySelector(
-            'input[name="payment"]:checked'
-        ).value === "online";
+    addressSelect.innerHTML =
+        '<option value="">Enter a new address</option>';
 
-        document.getElementById("placeOrderBtn").textContent =
-            online
-                ? "Continue to payment →"
-                : "Place order →";
+    if (!account || !Array.isArray(account.addresses)) return;
+
+    account.addresses.forEach(address => {
+
+        const option = document.createElement("option");
+
+        option.value = address.id;
+
+        option.textContent =
+            `${address.label} — ${address.street}, ${address.city}`;
+
+        addressSelect.appendChild(option);
 
     });
+}
+
+
+addressSelect?.addEventListener("change", () => {
+
+    if (!account) return;
+
+    const selected = account.addresses.find(
+        address => String(address.id) === addressSelect.value
+    );
+
+    if (!selected) {
+        document.getElementById("address").value = "";
+        document.getElementById("city").value = "";
+        document.getElementById("landmark").value = "";
+        return;
+    }
+
+    document.getElementById("address").value = selected.street;
+    document.getElementById("city").value = selected.city;
+    document.getElementById("landmark").value =
+        selected.landmark || "";
+
+    document.getElementById("savedAddressHint").textContent =
+        `Using your saved ${selected.label.toLowerCase()} address.`;
 
 });
 
 
-// ===================================
-// PLACE ORDER
-// ===================================
+// ---------- SAVE NEW ADDRESS ----------
 
-document.getElementById("checkoutForm").addEventListener(
-    "submit",
-    function(event) {
+function saveDeliveryAddress(customer) {
 
-        event.preventDefault();
+    if (!account) return;
 
-        if (!cart.length) {
+    const shouldSave =
+        document.getElementById("saveAddress")?.checked;
 
-            alert("Your cart is empty.");
+    if (!shouldSave) return;
 
-            return;
+    const address = {
+        id: Date.now(),
+        label: "Delivery Address",
+        street: customer.address,
+        city: customer.city,
+        landmark: customer.landmark
+    };
 
-        }
-
-
-        const formData = new FormData(this);
-
-        const payment = formData.get("payment");
-
-
-        // Online payment is not integrated yet.
-
-        if (payment === "online") {
-
-            alert(
-                "Online payment integration is coming soon. Please select Cash on Delivery for this demo."
-            );
-
-            return;
-
-        }
-
-
-        const order = {
-
-            id: "KWQ" + Date.now().toString().slice(-8),
-
-            restaurant: cart[0].restaurantName,
-
-            customer: {
-
-                name: formData.get("fullName"),
-
-                phone: formData.get("phone"),
-
-                email: formData.get("email"),
-
-                address: formData.get("address"),
-
-                city: formData.get("city"),
-
-                landmark: formData.get("landmark"),
-
-                instructions: formData.get("instructions")
-
-            },
-
-            items: cart,
-
-            subtotal,
-
-            deliveryFee,
-
-            serviceFee,
-
-            total: grandTotal,
-
-            paymentMethod: payment,
-
-            status: "Order placed",
-
-            createdAt: new Date().toISOString()
-
-        };
-
-
-        // DEMO ORDER STORAGE
-
-        const previousOrders = JSON.parse(
-            localStorage.getItem("kwiqEatOrders") || "[]"
-        );
-
-        previousOrders.push(order);
-
-        localStorage.setItem(
-            "kwiqEatOrders",
-            JSON.stringify(previousOrders)
-        );
-
-
-        localStorage.setItem(
-            "kwiqEatLatestOrder",
-            JSON.stringify(order)
-        );
-
-
-        // CLEAR CART
-
-        localStorage.removeItem(CART_KEY);
-
-
-        // REDIRECT
-
-        window.location.href = "order-success.html";
-
+    if (!Array.isArray(account.addresses)) {
+        account.addresses = [];
     }
 
-);
+    const alreadyExists = account.addresses.some(item =>
+        item.street.toLowerCase() === address.street.toLowerCase() &&
+        item.city.toLowerCase() === address.city.toLowerCase()
+    );
+
+    if (!alreadyExists) {
+        account.addresses.push(address);
+
+        localStorage.setItem(
+            ACCOUNT_KEY,
+            JSON.stringify(account)
+        );
+    }
+}
 
 
-// ===================================
-// INITIALIZE
-// ===================================
+// ---------- PLACE ORDER ----------
 
-document.getElementById("year").textContent =
-    new Date().getFullYear();
+checkoutForm?.addEventListener("submit", event => {
 
-renderCheckout();
+    event.preventDefault();
+
+    if (!cart.length) {
+        alert("Your cart is empty.");
+        window.location.href = "cart.html";
+        return;
+    }
+
+    const customer = {
+        name: document.getElementById("fullName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        landmark: document.getElementById("landmark").value.trim(),
+        instructions: document.getElementById("instructions").value.trim()
+    };
+
+    if (
+        !customer.name ||
+        !customer.phone ||
+        !customer.email ||
+        !customer.address ||
+        !customer.city
+    ) {
+        alert("Please complete all required delivery details.");
+        return;
+    }
+
+    const payment =
+        document.querySelector('input[name="payment"]:checked')?.value;
+
+    if (payment === "online") {
+        alert("Online payment is coming soon. Please select Cash on Delivery.");
+        return;
+    }
+
+    const totals = calculateTotals();
+
+    const order = {
+        id: "KWQ" + Date.now().toString().slice(-8),
+
+        restaurant: cart[0].restaurantName,
+
+        customer,
+
+        items: cart,
+
+        subtotal: totals.subtotal,
+        deliveryFee: totals.delivery,
+        serviceFee: totals.service,
+        total: totals.total,
+
+        paymentMethod: payment || "cash",
+
+        status: "Order placed",
+
+        statusHistory: [
+            {
+                status: "Order placed",
+                timestamp: new Date().toISOString()
+            }
+        ],
+
+        createdAt: new Date().toISOString()
+    };
+
+    saveDeliveryAddress(customer);
+
+    const orders = getStorage(ORDERS_KEY, []);
+
+    orders.push(order);
+
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+    localStorage.setItem(
+        "kwiQeatLatestOrder",
+        JSON.stringify(order)
+    );
+
+    localStorage.removeItem(CART_KEY);
+
+    window.location.href = "order-success.html";
+
+});
+
+
+// ---------- INITIALIZE ----------
+
+if (!cart.length) {
+    alert("Your cart is empty.");
+    window.location.href = "cart.html";
+} else {
+
+    renderCheckoutSummary();
+    renderSavedAddresses();
+
+    if (account) {
+        document.getElementById("fullName").value = account.name || "";
+        document.getElementById("phone").value = account.phone || "";
+        document.getElementById("email").value = account.email || "";
+    }
+
+}
