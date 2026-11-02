@@ -230,7 +230,146 @@ const restaurantData = {
     }
 
 };
+// ===================================
+// MEAL FAVOURITES
+// ===================================
 
+const FAVOURITES_KEY = "kwiqEatFavourites";
+
+function getFavourites() {
+
+    try {
+
+        const data = JSON.parse(
+            localStorage.getItem(FAVOURITES_KEY)
+        );
+
+        return {
+            restaurants: Array.isArray(data?.restaurants)
+                ? data.restaurants
+                : [],
+
+            meals: Array.isArray(data?.meals)
+                ? data.meals
+                : []
+        };
+
+    } catch {
+
+        return {
+            restaurants: [],
+            meals: []
+        };
+
+    }
+
+}
+
+
+function toggleMealFavourite(foodId) {
+
+    const favourites = getFavourites();
+
+    const restaurantId = Number(params.get("id"));
+
+    const mealKey = `${restaurantId}-${foodId}`;
+
+    const existing = favourites.meals.findIndex(
+        item => item.key === mealKey
+    );
+
+    if (existing !== -1) {
+
+        favourites.meals.splice(existing, 1);
+
+        showToast("Meal removed from favourites.");
+
+    } else {
+
+        const food = restaurant.menu.find(
+            item => item.id === foodId
+        );
+
+        if (!food) return;
+
+        favourites.meals.push({
+
+            key: mealKey,
+
+            id: food.id,
+
+            restaurantId,
+
+            restaurantName: restaurant.name,
+
+            name: food.name,
+
+            category: food.category,
+
+            price: food.price,
+
+            image: food.image,
+
+            description: food.description
+
+        });
+
+        showToast("Meal added to favourites! ❤️");
+
+    }
+
+    localStorage.setItem(
+        FAVOURITES_KEY,
+        JSON.stringify(favourites)
+    );
+
+    renderMenu(restaurant.menu);
+
+}
+
+
+function isMealFavourite(foodId) {
+
+    const restaurantId = Number(params.get("id"));
+
+    const mealKey = `${restaurantId}-${foodId}`;
+
+    return getFavourites().meals.some(
+        item => item.key === mealKey
+    );
+
+}
+
+
+function toggleRestaurantFavouriteFromMenu() {
+
+    const favourites = getFavourites();
+
+    const id = Number(restaurantId);
+
+    if (favourites.restaurants.includes(id)) {
+
+        favourites.restaurants =
+            favourites.restaurants.filter(item => item !== id);
+
+        showToast("Restaurant removed from favourites.");
+
+    } else {
+
+        favourites.restaurants.push(id);
+
+        showToast("Restaurant added to favourites! ❤️");
+
+    }
+
+    localStorage.setItem(
+        FAVOURITES_KEY,
+        JSON.stringify(favourites)
+    );
+
+    renderProfile();
+
+}
 
 // GET RESTAURANT ID
 
@@ -282,6 +421,14 @@ function renderProfile() {
         </div>
 
         <div class="profile-info">
+        <button
+    class="profile-favourite-btn"
+    onclick="toggleRestaurantFavouriteFromMenu()"
+>
+    ${getFavourites().restaurants.includes(Number(restaurantId))
+        ? "♥ Saved to favourites"
+        : "♡ Add to favourites"}
+</button>
 
             <span class="eyebrow">RESTAURANT</span>
 
@@ -352,13 +499,38 @@ function filterMenu(category, button) {
 
 function renderMenu(items) {
 
+    if (!items.length) {
+
+        foodGrid.innerHTML = `
+            <div class="restaurant-empty">
+                <h3>No meals found.</h3>
+                <p>Try another category.</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
     foodGrid.innerHTML = items.map(item => `
 
         <article class="food-card">
 
             <div class="food-image">
 
-                <img src="${item.image}" alt="${item.name}" loading="lazy">
+                <img
+                    src="${item.image}"
+                    alt="${item.name}"
+                    loading="lazy"
+                >
+
+                <button
+                    class="favourite-btn"
+                    onclick="toggleMealFavourite(${item.id})"
+                    aria-label="Save ${item.name}"
+                >
+                    ${isMealFavourite(item.id) ? "♥" : "♡"}
+                </button>
 
             </div>
 
@@ -370,7 +542,9 @@ function renderMenu(items) {
 
                 <div class="food-bottom">
 
-                    <strong>₦${item.price.toLocaleString("en-NG")}</strong>
+                    <strong>
+                        ₦${item.price.toLocaleString("en-NG")}
+                    </strong>
 
                     <button onclick="addToCart(${item.id})">
                         + Add
