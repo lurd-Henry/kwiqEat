@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Favourites | kwiqEat</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+<nav class="navbar container">
+    <a href="index.html" class="logo">
+        kwiq<span>Eat</span><i>.</i>
+    </a>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#restaurants">Restaurants</a>
+        <a href="favourites.html" class="active">Favourites</a>
+    </div>
+    <div class="nav-actions">
+        <a href="cart.html" class="signup-btn">
+            🛒 Cart
+        </a>
+    </div>
+</nav>
+</header>
+<main class="favourites-page">
+<div class="container">
+    <div class="cart-heading">
+        <span class="eyebrow">YOUR PERSONAL COLLECTION</span>
+        <h1>Your <span>favourites.</span> ❤️</h1>
+        <p>All the meals and restaurants you love, in one place.</p>
+    </div>
+    <section class="favourites-section">
+        <div class="section-heading">
+            <h2>Favourite restaurants</h2>
+        </div>
+        <div class="restaurant-grid" id="favouriteRestaurants"></div>
+    </section>
+    <section class="favourites-section">
+        <div class="section-heading">
+            <h2>Favourite meals</h2>
+        </div>
+        <div class="food-grid" id="favouriteMeals"></div>
+    </section>
+</div>
+</main>
+<footer class="footer">
+<div class="container footer-bottom">
+    <p>© <span id="year"></span> kwiqEat. All rights reserved.</p>
+    <p class="developer-credit">
+        Crafted with ❤️ by <strong>Henry</strong>.
+    </p>
+</div>
+</footer>
+<div id="toast" class="toast"></div>
+<script src="assets/js/favourites.js"></script>
+</body>
+</html>
