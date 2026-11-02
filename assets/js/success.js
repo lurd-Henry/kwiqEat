@@ -53,7 +53,17 @@ if (!order) {
     `;
 
 }
+const trackingButton = document.createElement("a");
 
+trackingButton.href =
+    `track-order.html?id=${encodeURIComponent(order.id)}`;
+
+trackingButton.className = "account-primary-btn";
+
+trackingButton.textContent = "Track My Order";
+
+document.getElementById("successContainer")
+    .appendChild(trackingButton);
 
 document.getElementById("year").textContent =
     new Date().getFullYear();
