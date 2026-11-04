@@ -18,7 +18,9 @@ const authMessage = document.getElementById("authMessage");
 
 let authMode = "login";
 let currentUser = null;
-
+localStorage.removeItem("kwiQeatAccount");
+localStorage.removeItem("kwiQeatSession");
+localStorage.removeItem("kwiQeatToken");
 
 // ==========================================
 // INITIAL SETUP
