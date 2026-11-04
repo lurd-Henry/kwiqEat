@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="dashboard-top-actions">
-                    <span class="live-indicator">● Demo Mode</span>
+                    <span class="live-indicator" id="connectionStatus">● Connecting...</span>
                 </div>
             </header>
 
@@ -73,6 +73,30 @@
                     </div>
                 </div>
 
+                <div id="restaurantApprovalNotice" class="dashboard-panel" hidden>
+    <h3 id="approvalTitle">Restaurant Application Pending</h3>
+    <p id="approvalMessage">
+        Your restaurant is awaiting approval.
+    </p>
+</div>
+
+<div class="dashboard-panel">
+    <div class="panel-heading">
+        <div>
+            <h3>Restaurant Availability</h3>
+            <p>Control whether customers can order from your restaurant.</p>
+        </div>
+
+        <button
+            type="button"
+            class="dashboard-primary-btn"
+            id="restaurantAvailabilityToggle"
+            disabled
+        >
+            Loading...
+        </button>
+    </div>
+</div>
                 <div class="dashboard-stats">
 
                     <div class="stat-card">
@@ -212,27 +236,29 @@
 
                 <div class="dashboard-panel settings-panel">
 
-                    <label>Restaurant Name</label>
-                    <input type="text" id="settingRestaurantName" value="Mama's Kitchen">
+    <label for="settingRestaurantName">Restaurant Name</label>
+    <input type="text" id="settingRestaurantName" required>
 
-                    <label>Restaurant Category</label>
-                    <select id="settingRestaurantCategory">
-                        <option>Rice</option>
-                        <option>Burgers</option>
-                        <option>Pizza</option>
-                        <option>Chicken</option>
-                        <option>Drinks</option>
-                        <option>Snacks</option>
-                    </select>
+    <label for="settingRestaurantPhone">Phone Number</label>
+    <input type="tel" id="settingRestaurantPhone">
 
-                    <label>Delivery Time</label>
-                    <input type="text" id="settingDeliveryTime" placeholder="20–30 mins">
+    <label for="settingRestaurantDescription">Description</label>
+    <textarea id="settingRestaurantDescription"></textarea>
 
-                    <button class="dashboard-primary-btn" id="saveRestaurantSettings">
-                        Save Changes
-                    </button>
+    <label for="settingRestaurantAddress">Address</label>
+    <input type="text" id="settingRestaurantAddress">
 
-                </div>
+    <label for="settingRestaurantCity">City</label>
+    <input type="text" id="settingRestaurantCity">
+
+    <label for="settingRestaurantState">State</label>
+    <input type="text" id="settingRestaurantState">
+
+    <button class="dashboard-primary-btn" id="saveRestaurantSettings">
+        Save Changes
+    </button>
+
+</div>
 
             </section>
 
@@ -265,9 +291,16 @@
                 <label>Price (₦)</label>
                 <input type="number" id="foodPrice" min="1" required>
 
-                <label>Image URL</label>
-                <input type="url" id="foodImage" placeholder="https://example.com/food.jpg">
+               <label>Food Image</label>
+<input
+    type="file"
+    id="foodImage"
+    accept="image/jpeg,image/png,image/webp"
+>
 
+<small>Maximum image size: 5MB. JPG, PNG or WEBP.</small>
+
+<div id="foodImagePreview" style="margin-top:10px;"></div>
                 <button type="submit" class="dashboard-primary-btn">
                     Save Meal
                 </button>
