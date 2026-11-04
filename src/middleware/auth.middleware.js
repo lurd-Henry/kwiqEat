@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const pool = require("../config/database");
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
 
     try {
 
@@ -20,7 +21,33 @@ const authenticate = (req, res, next) => {
             process.env.JWT_SECRET
         );
 
-        req.user = decoded;
+        const result = await pool.query(
+            `SELECT id, role, status
+             FROM users
+             WHERE id = $1`,
+            [decoded.id]
+        );
+
+        if (!result.rows.length) {
+            return res.status(401).json({
+                success: false,
+                message: "Account not found."
+            });
+        }
+
+        const user = result.rows[0];
+
+        if (user.status !== "active") {
+            return res.status(403).json({
+                success: false,
+                message: "Your account is suspended or inactive."
+            });
+        }
+
+        req.user = {
+            id: user.id,
+            role: user.role
+        };
 
         next();
 
@@ -36,26 +63,17 @@ const authenticate = (req, res, next) => {
 };
 
 
-// =====================================
-// ROLE AUTHORIZATION
-// =====================================
-
 const authorize = (...roles) => {
 
     return (req, res, next) => {
 
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Authentication required."
-            });
-        }
+        if (!req.user || !roles.includes(req.user.role)) {
 
-        if (!roles.includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
-                message: "You do not have permission to access this resource."
+                message: "Access denied."
             });
+
         }
 
         next();
