@@ -10,7 +10,9 @@ const healthRoutes = require("./routes/health.routes.js");
 const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
+const menuRoutes = require("./routes/menu.routes");
 app.use("/api/users", userRoutes);
+app.use("/api/menu", menuRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 // =====================================
 // MIDDLEWARE
