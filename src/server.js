@@ -11,6 +11,11 @@ const authRoutes = require("./routes/auth.routes.js");
 const userRoutes = require("./routes/user.routes");
 const restaurantRoutes = require("./routes/restaurant.routes");
 const menuRoutes = require("./routes/menu.routes");
+const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/order.routes");
+
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/restaurants", restaurantRoutes);
