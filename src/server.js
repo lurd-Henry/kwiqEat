@@ -74,22 +74,12 @@ app.use((req, res) => {
 
 });
 
-
+const errorHandler = require("./middleware/error.middleware");
 // =====================================
 // GLOBAL ERROR HANDLER
 // =====================================
 
-app.use((error, req, res, next) => {
-
-    console.error(error);
-
-    res.status(error.status || 500).json({
-        success: false,
-        message: error.message || "Internal server error."
-    });
-
-});
-
+app.use(errorHandler);
 
 // =====================================
 // START SERVER
