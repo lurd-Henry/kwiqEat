@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/health", healthRoutes);
-
+app.use("/api/auth", authRoutes);
 
 // =====================================
 // 404 HANDLER
