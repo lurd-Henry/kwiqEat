@@ -13,7 +13,9 @@ const restaurantRoutes = require("./routes/restaurant.routes");
 const menuRoutes = require("./routes/menu.routes");
 const cartRoutes = require("./routes/cart.routes");
 const orderRoutes = require("./routes/order.routes");
+const restaurantOrderRoutes = require("./routes/restaurant-order.routes");
 
+app.use("/api/restaurant/orders", restaurantOrderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/users", userRoutes);
