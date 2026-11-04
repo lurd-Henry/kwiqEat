@@ -1,5 +1,11 @@
-const ACCOUNT_KEY = "kwiQeatAccount";
-const SESSION_KEY = "kwiQeatSession";
+// ==========================================
+// KWIQEAT ACCOUNT SYSTEM
+// Backend Authentication Integration
+// ==========================================
+
+const API_URL = "https://kwiqeat-api.onrender.com";
+
+const TOKEN_KEY = "kwiQeatToken";
 
 const authSection = document.getElementById("authSection");
 const dashboardSection = document.getElementById("dashboardSection");
@@ -11,58 +17,79 @@ const authSubmit = document.getElementById("authSubmit");
 const authMessage = document.getElementById("authMessage");
 
 let authMode = "login";
+let currentUser = null;
+
+
+// ==========================================
+// INITIAL SETUP
+// ==========================================
 
 document.getElementById("year").textContent =
     new Date().getFullYear();
 
 
-// ---------- STORAGE ----------
+// ==========================================
+// API HELPER
+// ==========================================
 
-function getAccount() {
+async function apiRequest(endpoint, options = {}) {
+
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    const headers = {
+        ...(options.headers || {})
+    };
+
+    if (!(options.body instanceof FormData) && options.body) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    let response;
+
     try {
-        return JSON.parse(localStorage.getItem(ACCOUNT_KEY));
-    } catch {
-        return null;
-    }
-}
 
-function getOrders() {
-    try {
-        return JSON.parse(localStorage.getItem("kwiQeatOrders")) || [];
-    } catch {
-        return [];
-    }
-}
+        response = await fetch(`${API_URL}${endpoint}`, {
+            ...options,
+            headers
+        });
 
-function getSession() {
-    return localStorage.getItem(SESSION_KEY);
-}
+    } catch (error) {
 
-function saveAccount(account) {
-    localStorage.setItem(ACCOUNT_KEY, JSON.stringify(account));
-}
+        throw new Error(
+            "Unable to connect to kwiQeat. Please check your internet connection."
+        );
 
-
-// ---------- AUTHENTICATION ----------
-
-// This is a browser-only demonstration.
-// A real authentication system must verify passwords on a backend.
-
-async function hashPassword(password) {
-    if (!window.crypto || !window.crypto.subtle) {
-        throw new Error("Secure password hashing is unavailable.");
     }
 
-    const data = new TextEncoder().encode(password);
-    const hash = await crypto.subtle.digest("SHA-256", data);
+    const data = await response.json().catch(() => ({}));
 
-    return Array.from(new Uint8Array(hash))
-        .map(byte => byte.toString(16).padStart(2, "0"))
-        .join("");
+    if (!response.ok) {
+
+        if (response.status === 401 && token) {
+            logout(false);
+        }
+
+        throw new Error(
+            data.message || "Something went wrong. Please try again."
+        );
+
+    }
+
+    return data;
+
 }
 
+
+// ==========================================
+// AUTH MODE
+// ==========================================
 
 function setAuthMode(mode) {
+
     authMode = mode;
 
     const isRegister = mode === "register";
@@ -92,6 +119,7 @@ function setAuthMode(mode) {
         : "Login";
 
     authMessage.textContent = "";
+
 }
 
 
@@ -104,7 +132,12 @@ document.getElementById("registerTab").addEventListener("click", () => {
 });
 
 
+// ==========================================
+// LOGIN / REGISTRATION
+// ==========================================
+
 authForm.addEventListener("submit", async event => {
+
     event.preventDefault();
 
     const email = document.getElementById("authEmail")
@@ -114,110 +147,199 @@ authForm.addEventListener("submit", async event => {
 
     authMessage.textContent = "";
 
+    authSubmit.disabled = true;
+
+    authSubmit.textContent = "Please wait...";
+
     try {
-        const passwordHash = await hashPassword(password);
+
+        let endpoint;
+        let payload;
 
         if (authMode === "register") {
 
-            const name = document.getElementById("authName")
+            const full_name = document.getElementById("authName")
                 .value.trim();
 
             const phone = document.getElementById("authPhone")
                 .value.trim();
 
-            if (!name || !phone) {
+            if (!full_name || !phone) {
                 throw new Error("Please complete all required fields.");
             }
 
-            if (getAccount()) {
-                throw new Error(
-                    "A demo account already exists in this browser. Delete it or use login."
-                );
-            }
+            endpoint = "/api/auth/register";
 
-            const account = {
-                name,
+            payload = {
+                full_name,
                 email,
                 phone,
-                passwordHash,
-                addresses: [],
-                createdAt: new Date().toISOString()
+                password
             };
-
-            saveAccount(account);
-
-            localStorage.setItem(SESSION_KEY, "active");
-
-            showDashboard();
 
         } else {
 
-            const account = getAccount();
+            endpoint = "/api/auth/login";
 
-            if (!account) {
-                throw new Error("No account found. Please create one.");
-            }
+            payload = {
+                email,
+                password
+            };
 
-            if (
-                account.email !== email ||
-                account.passwordHash !== passwordHash
-            ) {
-                throw new Error("Incorrect email or password.");
-            }
-
-            localStorage.setItem(SESSION_KEY, "active");
-
-            showDashboard();
         }
 
+        const data = await apiRequest(endpoint, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        if (!data.token) {
+            throw new Error("Authentication token was not returned.");
+        }
+
+        localStorage.setItem(TOKEN_KEY, data.token);
+
+        currentUser = data.user;
+
+        await loadDashboard();
+
+        authForm.reset();
+
     } catch (error) {
+
         authMessage.textContent = error.message;
+
+    } finally {
+
+        authSubmit.disabled = false;
+
+        authSubmit.textContent = authMode === "register"
+            ? "Create Account"
+            : "Login";
+
     }
+
 });
 
 
-// ---------- DASHBOARD ----------
+// ==========================================
+// VERIFY SESSION WITH BACKEND
+// ==========================================
 
-function showDashboard() {
+async function verifySession() {
 
-    const account = getAccount();
+    const token = localStorage.getItem(TOKEN_KEY);
 
-    if (!account || getSession() !== "active") {
-        authSection.classList.remove("hidden");
-        dashboardSection.classList.add("hidden");
+    if (!token) {
+
+        showLogin();
+
+        return;
+
+    }
+
+    try {
+
+        const data = await apiRequest("/api/auth/me");
+
+        currentUser = data.user;
+
+        await loadDashboard();
+
+    } catch (error) {
+
+        localStorage.removeItem(TOKEN_KEY);
+
+        showLogin();
+
+    }
+
+}
+
+
+// ==========================================
+// LOAD DASHBOARD
+// ==========================================
+
+async function loadDashboard() {
+
+    if (!currentUser) {
+        showLogin();
         return;
     }
 
     authSection.classList.add("hidden");
+
     dashboardSection.classList.remove("hidden");
 
-    document.getElementById("welcomeName").textContent =
-        account.name.split(" ")[0];
+    const name = currentUser.full_name || "Customer";
 
-    document.getElementById("profileName").value = account.name;
-    document.getElementById("profileEmail").value = account.email;
-    document.getElementById("profilePhone").value = account.phone || "";
+    document.getElementById("welcomeName").textContent =
+        name.split(" ")[0];
+
+    document.getElementById("profileName").value = name;
+
+    document.getElementById("profileEmail").value =
+        currentUser.email || "";
+
+    document.getElementById("profilePhone").value =
+        currentUser.phone || "";
 
     document.getElementById("settingsEmail").textContent =
-        account.email;
+        currentUser.email || "";
 
     renderAddresses();
-    renderOrders();
+
+    await renderOrders();
+
 }
 
 
-document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem(SESSION_KEY);
+// ==========================================
+// SHOW LOGIN
+// ==========================================
+
+function showLogin() {
+
+    currentUser = null;
 
     dashboardSection.classList.add("hidden");
+
     authSection.classList.remove("hidden");
 
+}
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logout(showMessage = true) {
+
+    localStorage.removeItem(TOKEN_KEY);
+
+    currentUser = null;
+
+    showLogin();
+
     authForm.reset();
+
     setAuthMode("login");
-});
+
+    if (showMessage) {
+        alert("You have been logged out.");
+    }
+
+}
 
 
-// ---------- DASHBOARD NAVIGATION ----------
+document.getElementById("logoutBtn")
+    .addEventListener("click", () => logout());
+
+
+// ==========================================
+// DASHBOARD NAVIGATION
+// ==========================================
 
 document.querySelectorAll(".account-nav").forEach(button => {
 
@@ -241,51 +363,93 @@ document.querySelectorAll(".account-nav").forEach(button => {
 });
 
 
-// ---------- PROFILE ----------
+// ==========================================
+// PROFILE
+// ==========================================
+
+// Profile updates are not yet connected to a backend
+// PUT endpoint. Do not save fake changes locally.
 
 document.getElementById("profileForm")
     .addEventListener("submit", event => {
 
         event.preventDefault();
 
-        const account = getAccount();
-
-        account.name = document.getElementById("profileName")
-            .value.trim();
-
-        account.phone = document.getElementById("profilePhone")
-            .value.trim();
-
-        saveAccount(account);
-
-        document.getElementById("welcomeName").textContent =
-            account.name.split(" ")[0];
-
-        showMessage("profileMessage", "Profile updated successfully.");
+        showMessage(
+            "profileMessage",
+            "Profile editing will be available soon."
+        );
 
     });
 
 
-// ---------- ADDRESSES ----------
+// ==========================================
+// SAVED ADDRESSES
+// TEMPORARILY BROWSER-LOCAL
+// ==========================================
+
+function getAddressKey() {
+
+    return `kwiQeatAddresses_${currentUser.id}`;
+
+}
+
+
+function getAddresses() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(getAddressKey())
+        ) || [];
+
+    } catch {
+
+        return [];
+
+    }
+
+}
+
+
+function saveAddresses(addresses) {
+
+    localStorage.setItem(
+        getAddressKey(),
+        JSON.stringify(addresses)
+    );
+
+}
+
 
 document.getElementById("addressForm")
     .addEventListener("submit", event => {
 
         event.preventDefault();
 
-        const account = getAccount();
-
         const address = {
+
             id: Date.now(),
-            label: document.getElementById("addressLabel").value.trim(),
-            street: document.getElementById("addressStreet").value.trim(),
-            city: document.getElementById("addressCity").value.trim(),
-            landmark: document.getElementById("addressLandmark").value.trim()
+
+            label: document.getElementById("addressLabel")
+                .value.trim(),
+
+            street: document.getElementById("addressStreet")
+                .value.trim(),
+
+            city: document.getElementById("addressCity")
+                .value.trim(),
+
+            landmark: document.getElementById("addressLandmark")
+                .value.trim()
+
         };
 
-        account.addresses.push(address);
+        const addresses = getAddresses();
 
-        saveAccount(account);
+        addresses.push(address);
+
+        saveAddresses(addresses);
 
         event.target.reset();
 
@@ -297,210 +461,166 @@ document.getElementById("addressForm")
 function renderAddresses() {
 
     const container = document.getElementById("savedAddresses");
-    const account = getAccount();
+
+    const addresses = getAddresses();
 
     container.innerHTML = "";
 
-    if (!account.addresses || account.addresses.length === 0) {
-        container.textContent = "You haven't saved any addresses yet.";
+    if (!addresses.length) {
+
+        container.textContent =
+            "You haven't saved any addresses yet.";
+
         return;
+
     }
 
-    account.addresses.forEach(address => {
+    addresses.forEach(address => {
 
         const card = document.createElement("div");
+
         card.className = "saved-address-card";
 
         const title = document.createElement("h3");
+
         title.textContent = address.label;
 
         const location = document.createElement("p");
+
         location.textContent =
             `${address.street}, ${address.city}`;
 
         const landmark = document.createElement("p");
+
         landmark.textContent = address.landmark
             ? `Landmark: ${address.landmark}`
             : "";
 
         const removeButton = document.createElement("button");
+
         removeButton.className = "delete-btn";
+
         removeButton.textContent = "Remove";
 
         removeButton.addEventListener("click", () => {
-            removeAddress(address.id);
+
+            const updated = getAddresses().filter(
+                item => item.id !== address.id
+            );
+
+            saveAddresses(updated);
+
+            renderAddresses();
+
         });
 
         card.append(title, location, landmark, removeButton);
+
         container.appendChild(card);
 
     });
+
 }
 
 
-function removeAddress(id) {
+// ==========================================
+// ORDER HISTORY
+// CONNECTED TO BACKEND
+// ==========================================
 
-    const account = getAccount();
-
-    account.addresses = account.addresses.filter(
-        address => address.id !== id
-    );
-
-    saveAccount(account);
-
-    renderAddresses();
-}
-
-
-// ---------- ORDER HISTORY ----------
-
-function renderOrders() {
+async function renderOrders() {
 
     const container = document.getElementById("orderHistory");
-    const account = getAccount();
 
-    const orders = getOrders().filter(order => {
-
-        const customerEmail = order.customer?.email || "";
-
-        return customerEmail.toLowerCase() ===
-            account.email.toLowerCase();
-
-    });
-
-    container.innerHTML = "";
-
-    if (orders.length === 0) {
-        container.textContent = "You haven't placed any orders yet.";
-        return;
-    }
-
-    orders.slice().reverse().forEach(order => {
-
-        const card = document.createElement("div");
-        card.className = "order-history-card";
-
-        const title = document.createElement("h3");
-        title.textContent = `Order #${order.id || "N/A"}`;
-
-        const date = document.createElement("p");
-
-        date.textContent = order.createdAt
-            ? new Date(order.createdAt).toLocaleString()
-            : "Date unavailable";
-
-        const restaurant = document.createElement("p");
-
-        restaurant.textContent =
-            order.items?.[0]?.restaurantName || "kwiQeat Restaurant";
-
-        const total = document.createElement("strong");
-
-        total.textContent =
-            `₦${Number(order.total || 0).toLocaleString()}`;
-
-        const reorderButton = document.createElement("button");
-
-        reorderButton.className = "account-primary-btn";
-        reorderButton.textContent = "Reorder";
-
-        reorderButton.addEventListener("click", () => {
-            reorder(order);
-        });
-
-        card.append(title, date, restaurant, total, reorderButton);
-
-        container.appendChild(card);
-
-    });
-}
-
-
-// ---------- REORDER ----------
-
-function reorder(order) {
-
-    if (!order.items || order.items.length === 0) {
-        alert("This order has no items to reorder.");
-        return;
-    }
-
-    let cart = [];
+    container.innerHTML = "Loading orders...";
 
     try {
-        cart = JSON.parse(localStorage.getItem("kwiQeatCart")) || [];
-    } catch {
-        cart = [];
-    }
 
-    const firstRestaurant = order.items[0].restaurantId;
+        const data = await apiRequest("/api/orders/my-orders");
 
-    if (
-        cart.length > 0 &&
-        String(cart[0].restaurantId) !== String(firstRestaurant)
-    ) {
-        const confirmClear = confirm(
-            "Your cart contains items from another restaurant. Replace it with this order?"
-        );
+        const orders = data.orders || [];
 
-        if (!confirmClear) return;
+        container.innerHTML = "";
 
-        cart = [];
-    }
+        if (!orders.length) {
 
-    order.items.forEach(item => {
+            container.textContent =
+                "You haven't placed any orders yet.";
 
-        const existing = cart.find(
-            cartItem =>
-                String(cartItem.id) === String(item.id) &&
-                String(cartItem.restaurantId) === String(item.restaurantId)
-        );
+            return;
 
-        if (existing) {
-            existing.quantity += Number(item.quantity || 1);
-        } else {
-            cart.push({
-                ...item,
-                quantity: Number(item.quantity || 1)
-            });
         }
 
-    });
+        orders.forEach(order => {
 
-    localStorage.setItem("kwiQeatCart", JSON.stringify(cart));
+            const card = document.createElement("div");
 
-    alert("Your previous order has been added to your cart!");
+            card.className = "order-history-card";
 
-    window.location.href = "cart.html";
+            const title = document.createElement("h3");
+
+            title.textContent =
+                `Order #${order.order_number}`;
+
+            const date = document.createElement("p");
+
+            date.textContent = new Date(
+                order.created_at
+            ).toLocaleString();
+
+            const restaurant = document.createElement("p");
+
+            restaurant.textContent = order.restaurant_name;
+
+            const status = document.createElement("p");
+
+            status.textContent =
+                "Status: " + order.status.replace(/_/g, " ");
+
+            const total = document.createElement("strong");
+
+            total.textContent =
+                `₦${Number(order.total).toLocaleString()}`;
+
+            card.append(
+                title,
+                date,
+                restaurant,
+                status,
+                total
+            );
+
+            container.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        container.textContent = error.message;
+
+    }
+
 }
 
 
-// ---------- ACCOUNT DELETION ----------
+// ==========================================
+// ACCOUNT DELETION
+// NOT YET SUPPORTED BY BACKEND
+// ==========================================
 
 document.getElementById("deleteAccountBtn")
     .addEventListener("click", () => {
 
-        const confirmed = confirm(
-            "Are you sure you want to delete this demo account? This cannot be undone."
+        alert(
+            "Account deletion is not yet available. Please contact kwiQeat support."
         );
-
-        if (!confirmed) return;
-
-        localStorage.removeItem(ACCOUNT_KEY);
-        localStorage.removeItem(SESSION_KEY);
-
-        authSection.classList.remove("hidden");
-        dashboardSection.classList.add("hidden");
-
-        authForm.reset();
-        setAuthMode("register");
-
-        alert("Demo account deleted.");
 
     });
 
 
-// ---------- HELPERS ----------
+// ==========================================
+// HELPERS
+// ==========================================
 
 function showMessage(elementId, message) {
 
@@ -509,12 +629,16 @@ function showMessage(elementId, message) {
     element.textContent = message;
 
     setTimeout(() => {
+
         element.textContent = "";
+
     }, 3000);
 
 }
 
 
-// ---------- INITIAL LOAD ----------
+// ==========================================
+// INITIAL LOAD
+// ==========================================
 
-showDashboard();
+verifySession();
