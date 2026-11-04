@@ -6,7 +6,7 @@ const helmet = require("helmet");
 
 const app = express();
 
-const healthRoutes = require("./routes/health.routes");
+const healthRoutes = require("routes/health.routes");
 
 // =====================================
 // MIDDLEWARE
