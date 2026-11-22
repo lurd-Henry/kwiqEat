@@ -1,6 +1,17 @@
 # kwiQeat
 
 > A modern Nigerian food delivery platform connecting customers, restaurants, and delivery operations through a scalable web application.
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)
+
+![Express](https://img.shields.io/badge/Express.js-Backend-black?logo=express)
+
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
+
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
+
+![Cloudinary](https://img.shields.io/badge/Cloudinary-Image%20Storage-3448C5)
+
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 
 ![kwiQeat](https://img.shields.io/badge/kwiQeat-Food%20Delivery-orange)
 ![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
@@ -119,3 +130,23 @@ kwiQeat follows a client-server architecture.
       │  PostgreSQL   │     │   Cloudinary   │    │ Authentication│
       │   Database    │     │     Images     │    │     JWT       │
       └───────────────┘     └───────────────┘    └───────────────┘
+
+
+## Application Preview
+
+### Customer Experience
+
+![Homepage](screenshots/homepage.png)
+
+![Restaurant Page](screenshots/restaurant-page.png)
+
+![Checkout](screenshots/checkout.png)
+
+### Restaurant Management
+
+![Restaurant Dashboard](screenshots/restaurant-dashboard.png)
+
+### Administration
+
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
