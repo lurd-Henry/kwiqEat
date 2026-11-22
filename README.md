@@ -131,7 +131,7 @@ kwiQeat follows a client-server architecture.
       │   Database    │     │     Images     │    │     JWT       │
       └───────────────┘     └───────────────┘    └───────────────┘
 
-
+```
 ## Application Preview
 
 ### Customer Experience
