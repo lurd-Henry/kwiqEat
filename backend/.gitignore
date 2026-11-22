@@ -1,5 +1,28 @@
-node_modules/
+# Environment variables and secrets
 .env
-.env.local
-npm-debug.log
+.env.*
+**/.env
+**/.env.*
+
+# Allow example environment files
+!.env.example
+!**/.env.example
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Operating system files
 .DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
